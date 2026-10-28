@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>متجري الإلكتروني</title>
+<style>
+:root{--bg:#f6f6f6;--card:#fff;--tx:#1c1c1c;--mu:#777;--pr:#e53935;--bd:#e5e5e5;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121212;--card:#1e1e1e;--tx:#f1f1f1;--mu:#aaa;--bd:#333}}
+:root[data-theme="dark"]{--bg:#121212;--card:#1e1e1e;--tx:#f1f1f1;--mu:#aaa;--bd:#333}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif}
+header{background:var(--pr);color:#fff;padding:10px 12px;display:flex;gap:8px;align-items:center;position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+header h1{font-size:17px;margin:0;flex:1}
+button{font:inherit;cursor:pointer}
+.hb{background:#ffffff33;color:#fff;border:0;border-radius:20px;padding:6px 12px}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:8px 12px;background:var(--card)}
+.tabs button{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:18px;padding:5px 14px;white-space:nowrap}
+.tabs button.on{background:var(--tx);color:var(--bg)}
+input,select{font:inherit;background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:8px;width:100%}
+.s{padding:8px 12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 12px 20px}
+.p{background:var(--card);border-radius:8px;overflow:hidden}
+.im{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:56px}
+.pi{padding:8px;font-size:13px}.pi b{color:var(--pr);font-size:15px}
+.mu{color:var(--mu);font-size:12px}
+.add{float:left;border:1px solid var(--tx);background:none;color:var(--tx);border-radius:16px;padding:2px 10px}
+.pn{padding:12px;max-width:900px;margin:auto}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.k{background:var(--card);border-radius:10px;padding:12px}.k b{font-size:20px;display:block}
+.box{background:var(--card);border-radius:10px;padding:12px;margin-bottom:12px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}td,th{padding:6px;border-bottom:1px solid var(--bd);text-align:right;white-space:nowrap}
+.pr{background:var(--pr);color:#fff;border:0;border-radius:8px;padding:9px 14px}
+.dl{background:none;border:0;color:var(--pr)}
+.f{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}
+.hide{display:none}
+.bars{display:flex;align-items:flex-end;gap:6px;height:110px}.bars div{flex:1;background:var(--pr);border-radius:4px 4px 0 0;min-height:2px;position:relative}
+.bars span{position:absolute;bottom:-18px;font-size:10px;width:100%;text-align:center}
+</style>
+</head>
+<body>
+<header><h1>🛍️ متجري</h1><button class="hb" id="bc" onclick="go('cart')">🛒 <span id="cc">0</span></button><button class="hb" id="ba" onclick="go('admin')">⚙️ لوحة التحكم</button></header>
+
+<section id="shop">
+<div class="s"><input id="q" placeholder="ابحث عن منتج..." oninput="rs()"></div>
+<div class="tabs" id="tb"></div>
+<div class="grid" id="gr"></div>
+</section>
+
+<section id="cart" class="hide"><div class="pn"><button class="dl" onclick="go('shop')">← متابعة التسوق</button>
+<div class="box" id="ci"></div>
+<div class="box"><div class="f"><input id="cn" placeholder="الاسم"><input id="cp" placeholder="الهاتف"></div><b>المجموع: <span id="ct">0</span> د.ج</b><br><br><button class="pr" onclick="order()">تأكيد الطلب</button></div></div></section>
+
+<section id="admin" class="hide"><div class="pn">
+<button class="dl" onclick="go('shop')">← المتجر</button>
+<div class="cards"><div class="k"><span class="mu">المبيعات</span><b id="k1">0</b></div><div class="k"><span class="mu">الطلبات</span><b id="k2">0</b></div><div class="k"><span class="mu">المنتجات</span><b id="k3">0</b></div><div class="k"><span class="mu">مخزون منخفض</span><b id="k4">0</b></div></div>
+<div class="box"><b>المبيعات حسب الفئة</b><br><br><div class="bars" id="ch"></div><br></div>
+<div class="box"><b>إضافة / تعديل منتج</b><br><br>
+<div class="f"><input id="fn" placeholder="اسم المنتج"><input id="fe" placeholder="إيموجي 👗"><input id="fp" type="number" placeholder="السعر"><input id="fs" type="number" placeholder="المخزون"><select id="fc"></select><input id="ff" placeholder="فئة جديدة؟"></div>
+<button class="pr" onclick="save()">حفظ</button></div>
+<div class="box"><b>المنتجات</b><table id="pt"></table></div>
+<div class="box"><b>الطلبات</b><table id="ot"></table></div>
+</div></section>
+
+<script>
+var KEY="store_v1",D;
+var seed={n:9,p:[
+{id:1,n:"كارديغان محبوك",e:"🧥",c:"ملابس",p:2400,s:30,sold:120},
+{id:2,n:"قميص بحافة غير متماثلة",e:"👚",c:"ملابس",p:1800,s:25,sold:95},
+{id:3,n:"فستان صيفي مزهر",e:"👗",c:"ملابس",p:3200,s:15,sold:60},
+{id:4,n:"حذاء بكعب",e:"👠",c:"أحذية",p:4100,s:12,sold:40},
+{id:5,n:"حذاء رياضي",e:"👟",c:"أحذية",p:3600,s:3,sold:70},
+{id:6,n:"مشابك شعر",e:"🦋",c:"إكسسوارات",p:450,s:80,sold:210},
+{id:7,n:"عقد ذهبي",e:"📿",c:"مجوهرات",p:1500,s:20,sold:55},
+{id:8,n:"حقيبة يد",e:"👜",c:"إكسسوارات",p:2900,s:2,sold:48}],o:[]};
+try{D=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!D||!D.p)D=JSON.parse(JSON.stringify(seed));
+var cart={},cat="الكل";
+function sv(){try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}}
+function $(i){return document.getElementById(i)}
+function go(v){["shop","cart","admin"].forEach(function(x){$(x).classList.toggle("hide",x!=v)});if(v=="admin")ra();if(v=="cart")rc();window.scrollTo(0,0)}
+function cats(){var s=["الكل"];D.p.forEach(function(x){if(s.indexOf(x.c)<0)s.push(x.c)});return s}
+function rs(){
+$("tb").innerHTML=cats().map(function(c){return '<button class="'+(c==cat?"on":"")+'" onclick="cat=\''+c+'\';rs()">'+c+'</button>'}).join("");
+var q=$("q").value.trim();
+$("gr").innerHTML=D.p.filter(function(x){return (cat=="الكل"||x.c==cat)&&x.n.indexOf(q)>=0}).map(function(x){
+return '<div class="p"><div class="im">'+x.e+'</div><div class="pi">'+x.n+'<div class="mu">'+x.sold+'+ مبيعات</div><b>'+x.p+' د.ج</b><button class="add" '+(x.s<1?"disabled":"")+' onclick="add('+x.id+')">'+(x.s<1?"نفد":"🛒+")+'</button></div></div>'}).join("");
+$("cc").textContent=Object.keys(cart).reduce(function(a,k){return a+cart[k]},0)}
+function pf(id){return D.p.filter(function(x){return x.id==id})[0]}
+function add(id){var p=pf(id);if((cart[id]||0)<p.s){cart[id]=(cart[id]||0)+1}rs()}
+function rc(){var t=0,h="";Object.keys(cart).forEach(function(k){var p=pf(k);if(!p)return;t+=p.p*cart[k];h+='<p>'+p.e+' '+p.n+' × '+cart[k]+' — '+p.p*cart[k]+' <button class="dl" onclick="delete cart['+k+'];rc();rs()">حذف</button></p>'});
+$("ci").innerHTML=h||"السلة فارغة";$("ct").textContent=t}
+function order(){var ks=Object.keys(cart);if(!ks.length||!$("cn").value.trim()){alert("أدخل الاسم وأضف منتجات");return}
+var t=0,it=[];ks.forEach(function(k){var p=pf(k);p.s-=cart[k];p.sold+=cart[k];t+=p.p*cart[k];it.push({id:p.id,n:p.n,c:p.c,q:cart[k]})});
+D.o.push({id:D.o.length+1,cl:$("cn").value,ph:$("cp").value,t:t,it:it,st:"جديد",d:new Date().toLocaleDateString("ar")});
+cart={};sv();$("cn").value="";$("cp").value="";alert("تم إرسال الطلب ✅");rs();go("shop")}
+function ra(){
+var tot=D.o.reduce(function(a,o){return a+o.t},0);
+$("k1").textContent=tot+" د.ج";$("k2").textContent=D.o.length;$("k3").textContent=D.p.length;$("k4").textContent=D.p.filter(function(x){return x.s<=5}).length;
+var by={};D.o.forEach(function(o){o.it.forEach(function(i){by[i.c]=(by[i.c]||0)+i.q*(pf(i.id)?pf(i.id).p:0)})});
+var ks=Object.keys(by),m=Math.max.apply(null,ks.map(function(k){return by[k]}).concat([1]));
+$("ch").innerHTML=ks.length?ks.map(function(k){return '<div style="height:'+by[k]/m*100+'%"><span>'+k+'</span></div>'}).join(""):'<span class="mu">لا مبيعات بعد</span>';
+$("fc").innerHTML=cats().slice(1).map(function(c){return '<option>'+c+'</option>'}).join("");
+$("pt").innerHTML='<tr><th>المنتج</th><th>السعر</th><th>المخزون</th><th></th></tr>'+D.p.map(function(x){return '<tr><td>'+x.e+' '+x.n+'</td><td>'+x.p+'</td><td style="color:'+(x.s<=5?"#e53935":"inherit")+'">'+x.s+'</td><td><button class="dl" onclick="ed('+x.id+')">تعديل</button><button class="dl" onclick="rm('+x.id+')">حذف</button></td></tr>'}).join("");
+$("ot").innerHTML='<tr><th>#</th><th>العميل</th><th>المبلغ</th><th>الحالة</th></tr>'+D.o.slice().reverse().map(function(o){return '<tr><td>'+o.id+'</td><td>'+o.cl+' '+o.ph+'</td><td>'+o.t+'</td><td><select onchange="D.o['+(o.id-1)+'].st=this.value;sv()">'+["جديد","قيد التجهيز","تم الشحن","مكتمل"].map(function(s){return '<option'+(s==o.st?" selected":"")+'>'+s+'</option>'}).join("")+'</select></td></tr>'}).join("")}
+var eid=0;
+function ed(id){var p=pf(id);eid=id;$("fn").value=p.n;$("fe").value=p.e;$("fp").value=p.p;$("fs").value=p.s;$("fc").value=p.c;window.scrollTo(0,200)}
+function rm(id){if(confirm("حذف المنتج؟")){D.p=D.p.filter(function(x){return x.id!=id});sv();ra();rs()}}
+function save(){var n=$("fn").value.trim();if(!n)return;var c=$("ff").value.trim()||$("fc").value||"عام";
+var o={n:n,e:$("fe").value||"📦",p:+$("fp").value||0,s:+$("fs").value||0,c:c};
+if(eid){Object.assign(pf(eid),o)}else{o.id=++D.n;o.sold=0;D.p.push(o)}
+eid=0;["fn","fe","fp","fs","ff"].forEach(function(i){$(i).value=""});sv();ra();rs()}
+rs();
+</script>
+</body>
+</html>
