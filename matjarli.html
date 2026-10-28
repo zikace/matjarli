@@ -95,7 +95,7 @@ D.o.push({id:D.o.length+1,cl:$("cn").value,ph:$("cp").value,t:t,it:it,st:"جدي
 cart={};sv();$("cn").value="";$("cp").value="";alert("تم إرسال الطلب ✅");rs();go("shop")}
 function ra(){
 var tot=D.o.reduce(function(a,o){return a+o.t},0);
-$("k1").textContent=tot+" د.ج";$("k2").textContent=D.o.length;$("k3").textContent=D.p.length;$("k4").textContent=D.p.filter(function(x){return x.s<=5}).length;
+$("k1").textContent=tot+"د.م";$("k2").textContent=D.o.length;$("k3").textContent=D.p.length;$("k4").textContent=D.p.filter(function(x){return x.s<=5}).length;
 var by={};D.o.forEach(function(o){o.it.forEach(function(i){by[i.c]=(by[i.c]||0)+i.q*(pf(i.id)?pf(i.id).p:0)})});
 var ks=Object.keys(by),m=Math.max.apply(null,ks.map(function(k){return by[k]}).concat([1]));
 $("ch").innerHTML=ks.length?ks.map(function(k){return '<div style="height:'+by[k]/m*100+'%"><span>'+k+'</span></div>'}).join(""):'<span class="mu">لا مبيعات بعد</span>';
